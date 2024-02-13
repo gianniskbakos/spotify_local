@@ -8,6 +8,8 @@ from params import get_spotify_auth_params
 from utils import data_prep as dp
 import openpyxl as px
 
+test_run = True
+
 # Get Spotify API credentials
 creds_ini_path, path_root_data, key_creds = get_spotify_auth_params()
 
@@ -15,8 +17,9 @@ creds_ini_path, path_root_data, key_creds = get_spotify_auth_params()
 sp = MySpotifyAPI(path_root_data, creds_ini_path=creds_ini_path, key_creds=key_creds)
 
 # Extract playlist ids and save to csv
-playlist_ids = pd.read_csv('playlist_ids.csv')['playlist_id'].tolist()
-test_run = False
+playlist_ids = pd.read_csv('outputs\playlist_ids.csv')['playlist_id'].tolist()
+if test_run:
+  playlist_ids = playlist_ids[:1]
 
 playlists = []
 tracks = []
@@ -85,11 +88,10 @@ for i, playlist_id in enumerate(playlist_ids):
             # Track_Artists
             track_artist_dict = {'Track_ID': track_id, 'Artist_ID': artist_id}
             track_artists.append(track_artist_dict)
-      if test_run and i==0:
-            break
+
       offset += 100
       if offset > total:
-          break
+        break
 
 df_playlists = pd.DataFrame(playlists)
 df_playlist_tracks = pd.DataFrame(playlist_tracks)
@@ -99,18 +101,17 @@ df_track_artists = pd.DataFrame(track_artists)
 df_artists = pd.DataFrame(artists).drop_duplicates('Artist_ID')
 
 if not test_run:
-  df_playlists.to_csv('playlists.csv', index=False)
-  df_tracks.to_csv('tracks.csv', index=False)
-  df_playlist_tracks.to_csv('playlist_tracks.csv', index=False)
-  df_albums.to_csv('albums.csv', index=False)
-  df_track_artists.to_csv('track_artists.csv', index=False)
-  df_artists.to_csv('artists.csv', index=False)
-  
+  df_playlists.to_csv('outputs\playlists.csv', index=False)
+  df_tracks.to_csv('outputs\tracks.csv', index=False)
+  df_playlist_tracks.to_csv('outputs\playlist_tracks.csv', index=False)
+  df_albums.to_csv('outputs\albums.csv', index=False)
+  df_track_artists.to_csv('outputs\track_artists.csv', index=False)
+  df_artists.to_csv('outputs\artists.csv', index=False)
 
-# Count tracks by name and order by count descending
-top_tracks = df_tracks['Name'].value_counts().sort_values(ascending=False).head(100)
-# output to excel in a format that displays the spanish accents
-top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
+  # Count tracks by name and order by count descending
+  top_tracks = df_tracks['Name'].value_counts().sort_values(ascending=False).head(100)
+  # output to excel in a format that displays the spanish accents
+  top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
 
 # For each track there is an album, and potentially multiple artists for the album
 
@@ -155,7 +156,7 @@ top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
     "uri": "spotify:user:21dd34f7jc57fco6osflyzwvi",
     "display_name": "Giannis Bakos"
   },
-  "public": true,
+  "public": True,
   "snapshot_id": "NywwM2FjOTg4MzkzYzFhZDg4YmJkM2EzOWE1Njg5NmNiMDUyNjdlMTg2",
   "tracks": {
     "href": "https://api.spotify.com/v1/playlists/4G1vKeCArQNZCl8wMvwvb8/tracks?offset=0&limit=100&locale=en-GB%2Cen%3Bq%3D0.9%2Cfr-FR%3Bq%3D0.8%2Cfr%3Bq%3D0.7%2Cen-US%3Bq%3D0.6",
@@ -254,7 +255,7 @@ top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
           "uri": "spotify:track:5ww2BF9slyYgNOk37BlC4u",
           "is_local": False,
           "episode": False,
-          "track": true
+          "track": True
         },
         "primary_color": None,
         "video_thumbnail": {
@@ -350,7 +351,7 @@ top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
           "uri": "spotify:track:3Drkw04CaWleDX8sNeelgC",
           "is_local": False,
           "episode": False,
-          "track": true
+          "track": True
         },
         "primary_color": None,
         "video_thumbnail": {
@@ -486,7 +487,7 @@ top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
           "uri": "spotify:track:20yLo8tCAM1LXixAdBf3f2",
           "is_local": False,
           "episode": False,
-          "track": true
+          "track": True
         },
         "primary_color": None,
         "video_thumbnail": {
@@ -592,7 +593,7 @@ top_tracks.to_excel('top_tracks.xlsx', engine='openpyxl')
           "uri": "spotify:track:7oGpwtUeck1XjVevuNWmFL",
           "is_local": False,
           "episode": False,
-          "track": true
+          "track": True
         },
         "primary_color": None,
         "video_thumbnail": {
